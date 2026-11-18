@@ -1,0 +1,51 @@
+name: Build EVE for Windows
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Check out EVE project
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Download the Vosk English model
+        shell: pwsh
+        working-directory: EVE_Windows_App
+        run: |
+          New-Item -ItemType Directory -Force -Path 'models' | Out-Null
+          $url = 'https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip'
+          Invoke-WebRequest -Uri $url -OutFile "$env:RUNNER_TEMP\vosk-model.zip"
+          Expand-Archive -Path "$env:RUNNER_TEMP\vosk-model.zip" -DestinationPath 'models' -Force
+          if (!(Test-Path 'models/vosk-model-small-en-us-0.15')) { throw 'Vosk model extraction failed.' }
+          tar -czf 'models/vosk-model-small-en-us-0.15.tar.gz' -C 'models' 'vosk-model-small-en-us-0.15'
+
+      - name: Install dependencies
+        working-directory: EVE_Windows_App
+        run: npm install
+
+      - name: Build Windows installer
+        working-directory: EVE_Windows_App
+        run: npm run dist
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: EVE-Windows-Installer
+          path: |
+            EVE_Windows_App/dist/*.exe
+            EVE_Windows_App/dist/*.blockmap
+          if-no-files-found: error
+          retention-days: 14
