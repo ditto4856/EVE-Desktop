@@ -1,0 +1,50 @@
+{
+  "name": "eve-desktop",
+  "version": "1.2.0",
+  "description": "EVE personal AI assistant with holographic interface and offline Vosk voice recognition",
+  "main": "main.js",
+  "author": "EVE",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis"
+  },
+  "devDependencies": {
+    "electron": "^39.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.eve.assistant",
+    "productName": "EVE",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "package.json",
+      "node_modules/@lichess-org/vosk-browser/**",
+      "models/**"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "EVE"
+    }
+  },
+  "dependencies": {
+    "@lichess-org/vosk-browser": "^0.0.3"
+  }
+}

@@ -1,0 +1,390 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EVE Assistant</title><style>
+:root{color-scheme:dark;--bg:#06101a;--p:#0d1c2b;--edge:#214158;--cyan:#62d9f4;--green:#6de0ad;--muted:#91a9bb;--text:#e5f2fa}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% -15%,#164157,#06101a 55%);color:var(--text);font:15px/1.5 system-ui,Segoe UI,sans-serif}main{max-width:1100px;margin:auto;padding:24px 18px 45px}.header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;border-bottom:1px solid var(--edge);padding-bottom:17px;gap:12px}.brand{display:flex;align-items:center;gap:12px}.orb{width:48px;height:48px;border:1px solid var(--cyan);border-radius:50%;display:grid;place-items:center;color:var(--cyan);font-size:24px;box-shadow:0 0 22px #62d9f433}.brand h1{margin:0;letter-spacing:.22em;font-size:22px}.sub,.tag{font-size:11px;letter-spacing:.14em;color:var(--muted)}.pill{border:1px solid #286953;color:var(--green);border-radius:99px;padding:7px 12px;font-size:12px}.hero{padding:26px 0 20px}.hero h2{font-size:clamp(28px,4vw,40px);margin:5px 0}.hero p,.desc{color:var(--muted);font-size:13px}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:13px}.card{background:linear-gradient(145deg,#102235f5,#09131ef5);border:1px solid var(--edge);border-radius:15px;padding:17px;grid-column:span 4}.card.half{grid-column:span 6}.card.full{grid-column:span 12}.card h3{margin:3px 0 7px}.desc{margin:0 0 12px}.value{color:var(--cyan)}.status{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1b3449;font-size:13px;gap:10px}.status:last-child{border:0}.btns{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}.btn{background:#153047;border:1px solid #2a526d;border-radius:9px;color:var(--text);padding:9px 12px;cursor:pointer;font:inherit}.btn.primary{background:#13546b;border-color:var(--cyan)}.btn.stop{background:#321e27;border-color:#73444c}.btn:hover{filter:brightness(1.15)}.btn:disabled{opacity:.45;cursor:not-allowed}label{font-size:12px;color:var(--muted);display:block;margin:8px 0 4px}select,input[type=text]{width:100%;background:#07121d;color:var(--text);border:1px solid #29465d;border-radius:9px;padding:10px;font:inherit}.range{width:100%;accent-color:var(--cyan)}.switch{display:flex;align-items:center;gap:9px;margin-top:9px}.switch input{accent-color:var(--cyan)}.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.tile{background:#0a1926;border:1px solid #1e3b52;border-radius:9px;padding:10px}.tile b{display:block;font-size:12px}.tile small{color:var(--muted)}.chatbox{background:#030a10;border:1px solid #20384d;border-radius:10px;min-height:180px;max-height:300px;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px}.bubble{max-width:88%;padding:9px 12px;border-radius:12px;font-size:13px;white-space:pre-wrap}.bubble.user{align-self:flex-end;background:#16415a;border:1px solid #28637e}.bubble.edith{align-self:flex-start;background:#0b1d2b;border:1px solid #23445c}.bubble .who{font-size:10px;letter-spacing:.12em;color:var(--muted);display:block;margin-bottom:3px}.console{background:#030a10;border:1px solid #20384d;border-radius:10px;min-height:100px;max-height:210px;overflow:auto;padding:11px;font:12px/1.65 ui-monospace,monospace;color:#b8d9ea}.commandrow{display:flex;gap:8px}.commandrow input{flex:1;min-width:0}.note,footer{font-size:11px;color:var(--muted)}footer{text-align:center;padding-top:16px}@media(max-width:750px){.card,.card.half{grid-column:span 12}.tiles{grid-template-columns:repeat(2,1fr)}}
+
+/* EVE holographic body */
+.edith-stage{display:flex;align-items:center;gap:24px;margin:18px 0 4px;min-height:158px}
+.edith-orb-wrap{width:142px;height:142px;flex:0 0 142px;position:relative;display:grid;place-items:center;filter:drop-shadow(0 0 20px #62d9f455)}
+.edith-orb{width:92px;height:92px;border-radius:50%;position:relative;overflow:hidden;
+  background:radial-gradient(circle at 34% 28%,#effdff 0 3%,#b8f5ff 8%,#62d9f4 25%,#1689bd 53%,#073c69 78%,#031a35 100%);
+  border:1px solid #b9f7ff;box-shadow:inset -12px -14px 24px #00172b99,inset 8px 8px 18px #e5fcffbb,0 0 18px #62d9f4aa,0 0 45px #36bce966;
+  animation:edith-float 4s ease-in-out infinite,edith-pulse 3s ease-in-out infinite}
+.edith-orb:before{content:"";position:absolute;inset:8px 15px 48px 14px;border-radius:50%;background:linear-gradient(145deg,#fff9,#b8f5ff33 70%,transparent);filter:blur(2px)}
+.edith-orb:after{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-linear-gradient(115deg,transparent 0 9px,#c9faff17 10px 11px);mix-blend-mode:screen}
+.orb-ring{position:absolute;border:1px solid #72e6ff99;border-radius:50%;inset:9px;transform:rotateX(68deg) rotateZ(-20deg);animation:edith-spin 8s linear infinite}
+.orb-ring.ring-two{inset:1px;transform:rotateY(68deg) rotateZ(25deg);border-color:#b5f7ff66;animation:edith-spin-reverse 11s linear infinite}
+.orb-ring.ring-three{inset:19px;transform:rotateX(72deg) rotateZ(70deg);border-style:dashed;border-color:#62d9f477;animation:edith-spin 13s linear infinite}
+.orb-core{position:absolute;width:7px;height:7px;border-radius:50%;background:#efffff;box-shadow:0 0 12px 5px #9df3ff;z-index:2}
+.edith-stage-copy{max-width:440px}
+.edith-stage-copy .tag{color:#8cecff}
+.edith-stage-copy h2{margin:4px 0;font-size:clamp(24px,3vw,34px)}
+.edith-stage-copy p{margin:0;color:var(--muted);font-size:13px}
+.edith-orb-wrap.listening .edith-orb{animation:edith-float 1.4s ease-in-out infinite,edith-pulse .65s ease-in-out infinite;box-shadow:inset -12px -14px 24px #00172b99,0 0 24px #8ef4ff,0 0 70px #36bce9}
+.edith-orb-wrap.thinking .orb-ring{animation-duration:1.5s}
+.edith-orb-wrap.speaking .edith-orb{animation:edith-float .8s ease-in-out infinite,edith-pulse .45s ease-in-out infinite}
+@keyframes edith-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes edith-pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.22)}}
+@keyframes edith-spin{to{transform:rotateX(68deg) rotateZ(340deg)}}
+@keyframes edith-spin-reverse{to{transform:rotateY(68deg) rotateZ(-335deg)}}
+@media(max-width:520px){.edith-stage{gap:13px}.edith-orb-wrap{width:108px;height:108px;flex-basis:108px}.edith-orb{width:72px;height:72px}.edith-stage-copy p{font-size:12px}}
+
+
+/* EVE welcome experience and protected developer area */
+.assistant-hidden{display:none!important}
+#bootSplash,#welcomeScreen,#settingsScreen,#devScreen{position:fixed;inset:0;z-index:1000;background:radial-gradient(ellipse at 50% 42%,#123d59 0%,#071725 44%,#02070d 100%);color:#e8f8ff;display:flex;align-items:center;justify-content:center;padding:24px;}
+#bootSplash{z-index:1200;flex-direction:column;gap:18px;animation:bootFade .7s ease 1.8s forwards}
+.boot-orb,.menu-orb{width:132px;height:132px;border-radius:50%;position:relative;background:radial-gradient(circle at 32% 27%,#fff 0 2%,#c9faff 8%,#65dcf8 25%,#168bbd 54%,#073d6b 78%,#03162d 100%);border:1px solid #c5f8ff;box-shadow:inset -15px -17px 28px #00152b99,inset 8px 8px 18px #eaffffbb,0 0 25px #62d9f4aa,0 0 85px #36bce988;animation:bootFloat 2.3s ease-in-out infinite,bootGlow 1.7s ease-in-out infinite}
+.boot-orb:before,.menu-orb:before{content:"";position:absolute;inset:-20px;border:1px solid #8cecff99;border-radius:50%;transform:rotateX(68deg);animation:bootSpin 5s linear infinite}
+.boot-orb:after,.menu-orb:after{content:"";position:absolute;inset:-33px;border:1px dashed #8cecff66;border-radius:50%;transform:rotateY(68deg);animation:bootSpinBack 7s linear infinite}
+.boot-name{font-size:34px;letter-spacing:.55em;margin-left:.55em;font-weight:300;color:#baf6ff;text-shadow:0 0 22px #62d9f4}
+.boot-caption{font-size:11px;letter-spacing:.28em;color:#82aabd;text-transform:uppercase}
+#welcomeScreen{display:none;flex-direction:column;text-align:center;gap:16px}
+.welcome-brand{font-size:clamp(38px,7vw,64px);letter-spacing:.42em;margin-right:-.42em;font-weight:300;color:#c8f8ff;text-shadow:0 0 25px #62d9f4}
+.welcome-sub{color:#9abaca;letter-spacing:.16em;font-size:12px;text-transform:uppercase}
+.welcome-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:15px}
+.menu-btn{min-width:170px;padding:15px 23px;border-radius:12px;border:1px solid #3c829c;background:linear-gradient(145deg,#123b54,#0a1d2d);color:#e9fbff;letter-spacing:.13em;font-size:13px;cursor:pointer;box-shadow:0 8px 30px #0005;transition:.2s}
+.menu-btn.primary{background:linear-gradient(145deg,#17647b,#10344a);border-color:#70e5fa;box-shadow:0 0 25px #38c9eb33}
+.menu-btn:hover{transform:translateY(-2px);filter:brightness(1.18)}
+.menu-foot{position:absolute;bottom:22px;color:#66879a;font-size:10px;letter-spacing:.12em}
+.panel-card{width:min(560px,100%);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#102638f5,#07131ff5);border:1px solid #2c5870;border-radius:18px;padding:24px;box-shadow:0 25px 90px #0009}
+.panel-card h2{margin:0 0 5px;font-size:25px;color:#c4f6ff;font-weight:500}
+.panel-card p{color:#9abaca;font-size:13px}
+.panel-row{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.panel-row .menu-btn{flex:1}
+.panel-input{width:100%;background:#06111c;color:#effaff;border:1px solid #31556c;border-radius:9px;padding:12px;font-size:16px;letter-spacing:.18em;box-sizing:border-box}
+.panel-note{font-size:11px!important;color:#7899aa!important;line-height:1.5}
+#devPanel{display:none}
+.eve-app-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding:9px 0;border-bottom:1px solid #214158}
+.eve-nav-brand{letter-spacing:.3em;color:#b9f5ff;font-weight:600}.eve-nav-brand small{display:block;letter-spacing:.15em;font-size:9px;color:#7899aa;font-weight:400}
+@keyframes bootFloat{0%,100%{transform:translateY(0) scale(.92)}50%{transform:translateY(-10px) scale(1.03)}}
+@keyframes bootGlow{0%,100%{filter:brightness(.9)}50%{filter:brightness(1.3)}}
+@keyframes bootSpin{to{transform:rotateX(68deg) rotateZ(360deg)}}
+@keyframes bootSpinBack{to{transform:rotateY(68deg) rotateZ(-360deg)}}
+@keyframes bootFade{to{opacity:0;visibility:hidden}}
+@media(max-width:520px){.panel-card{padding:18px}.menu-btn{min-width:135px}.eve-app-nav .btn{padding:7px 9px;font-size:11px}}
+
+</style></head><body>
+<div id="bootSplash" aria-label="EVE starting">
+  <div class="boot-orb"></div><div class="boot-name">EVE</div><div class="boot-caption">Initialising personal assistant</div>
+</div>
+<section id="welcomeScreen" aria-label="EVE main menu">
+  <div class="menu-orb"></div>
+  <div class="welcome-brand">EVE</div>
+  <div class="welcome-sub">Personal AI · Local intelligence · Voice interface</div>
+  <div class="welcome-actions">
+    <button class="menu-btn primary" id="startEve">▶ &nbsp; START</button>
+    <button class="menu-btn" id="openSettings">⚙ &nbsp; SETTINGS</button>
+  </div>
+  <div class="menu-foot">EVE DESKTOP · PRIVATE LOCAL ASSISTANT</div>
+</section>
+<section id="settingsScreen" style="display:none" aria-label="EVE settings">
+  <div class="panel-card">
+    <h2>Settings</h2><p>Choose what you want to configure.</p>
+    <div class="panel-row"><button class="menu-btn" id="voiceSettings">🎙 Voice & microphone</button><button class="menu-btn" id="aiSettings">◈ AI & Ollama</button></div>
+    <div class="panel-row"><button class="menu-btn" id="developerAccess">⌘ Developer access</button></div>
+    <div class="panel-row"><button class="menu-btn" id="settingsBack">← Back to menu</button></div>
+    <p class="panel-note">Voice and AI settings are part of the assistant control panel. Developer access is a convenience PIN gate, not a substitute for Windows account security.</p>
+  </div>
+</section>
+<section id="devScreen" style="display:none" aria-label="EVE developer access">
+  <div class="panel-card">
+    <h2>Developer access</h2>
+    <p id="devIntro">Set a personal PIN to enable the developer panel on this Windows user profile.</p>
+    <div id="pinSetup">
+      <label for="newPin">Choose a PIN (6–12 digits)</label><input class="panel-input" id="newPin" type="password" inputmode="numeric" maxlength="12" autocomplete="new-password" placeholder="New PIN">
+      <label for="confirmPin">Confirm PIN</label><input class="panel-input" id="confirmPin" type="password" inputmode="numeric" maxlength="12" autocomplete="new-password" placeholder="Repeat PIN">
+      <div class="panel-row"><button class="menu-btn primary" id="savePin">SET DEVELOPER PIN</button></div>
+    </div>
+    <div id="pinUnlock" style="display:none">
+      <label for="unlockPin">Enter developer PIN</label><input class="panel-input" id="unlockPin" type="password" inputmode="numeric" maxlength="12" autocomplete="current-password" placeholder="PIN">
+      <div class="panel-row"><button class="menu-btn primary" id="unlockDev">UNLOCK</button></div>
+    </div>
+    <div id="devPanel">
+      <p style="color:#7ee8ff">● DEVELOPER SESSION UNLOCKED</p>
+      <p>Advanced configuration access is enabled for this session.</p>
+      <div class="panel-row"><button class="menu-btn primary" id="openFullConsole">OPEN CONTROL PANEL</button></div>
+      <div class="panel-row"><button class="menu-btn" id="changePin">CHANGE PIN</button><button class="menu-btn" id="lockDev">LOCK</button></div>
+      <p class="panel-note">This PIN is stored as a salted hash in this app's local profile. It is intended to prevent casual access to the developer panel; it is not strong authentication against someone with access to your Windows account or application files.</p>
+    </div>
+    <p class="panel-note" id="pinMessage" aria-live="polite"></p>
+    <div class="panel-row"><button class="menu-btn" id="devBack">← Back to settings</button></div>
+  </div>
+</section>
+
+<main id="assistantApp" class="assistant-hidden">
+<nav class="eve-app-nav"><button class="btn" id="backToMenu">← MENU</button><span class="eve-nav-brand">EVE <small>PERSONAL ASSISTANT</small></span><button class="btn" id="openSettingsFromApp">SETTINGS</button></nav><header class="header"><div class="brand"><div class="orb">◈</div><div><h1>EVE</h1><div class="sub">CENTRAL INTERFACE · DESKTOP ASSISTANT · 1.2</div></div></div><div class="pill">● ONLINE-CAPABLE</div></header>
+<section class="hero">
+<div class="edith-stage">
+  <div class="edith-orb-wrap" id="edithOrb" role="img" aria-label="EVE light-blue holographic orb">
+    <div class="orb-ring"></div><div class="orb-ring ring-two"></div><div class="orb-ring ring-three"></div>
+    <div class="edith-orb"><div class="orb-core"></div></div>
+  </div>
+  <div class="edith-stage-copy">
+    <div class="tag">SPATIAL ASSISTANT · HOLOGRAPHIC INTERFACE</div>
+    <h2>Good morning.</h2>
+    <p>I'm EVE. Your light-blue holographic assistant is online.</p>
+  </div>
+</div>
+</section>
+<section class="grid">
+<article class="card"><div class="tag">01 · CORE</div><h3>EVE Core</h3><p class="desc">Prototype command interpreter</p><div id="core" class="value">Ready · awaiting command</div><div class="btns"><button class="btn primary" onclick="cmd('status')">System check</button><button class="btn" onclick="cmd('help')">Help</button></div></article>
+<article class="card"><div class="tag">02 · PRIVACY</div><h3>Privacy controls</h3><p class="desc">Illustrative only — no real sensors controlled.</p><div class="status"><span>Privacy mode</span><b id="privacyState" style="color:var(--green)">ON</b></div><label class="switch"><input id="privacy" type="checkbox" checked> Enable privacy mode</label></article>
+<article class="card"><div class="tag">03 · SECURITY</div><h3>Security centre</h3><div class="status"><span>External connections</span><b id="netState" style="color:var(--green)">Web lookups + optional AI</b></div><div class="status"><span>Live scan</span><b>Not implemented</b></div><div class="status"><span>Demo data</span><b style="color:var(--green)">Settings stay in browser</b></div></article>
+<article class="card half"><div class="tag">04 · VOICE</div><h3>Voice & sound settings</h3><p class="desc">Choose an installed voice, preview it, and change speaking style. Voice options depend on your browser/Windows setup.</p><label for="voices">Available voices</label><select id="voices"><option>Loading installed voices…</option></select><div class="btns"><button class="btn primary" id="preview">▶ Preview voice</button><button class="btn" id="voiceToggle">Voice replies: ON</button></div><label>Speech speed <span id="rateTxt">1.00×</span></label><input id="rate" class="range" type="range" min=".75" max="1.25" step=".05" value="1"><label>Pitch <span id="pitchTxt">1.00</span></label><input id="pitch" class="range" type="range" min=".75" max="1.25" step=".05" value="1"><p class="note" id="voiceNote">Voice settings save locally in this browser.</p></article>
+<article class="card half"><div class="tag">05 · VOICE COMMANDS</div><h3>Talk to EVE</h3><p class="desc">Offline push-to-talk using a local Vosk model. Optional hands-free conversation mode (off by default).</p><div class="btns"><button class="btn primary" id="listen">🎙 Start listening</button><button class="btn stop" id="stop">Stop</button><button class="btn" id="handsFree">Conversation mode: OFF</button></div><div id="voiceStatus" class="note" aria-live="polite">Offline voice engine not loaded yet.</div><div class="tiles"><div class="tile"><b>“Status”</b><small>Overview</small></div><div class="tile"><b>“Privacy on/off”</b><small>Demo toggle</small></div><div class="tile"><b>“Show security”</b><small>Security response</small></div><div class="tile"><b>“Connections”</b><small>Network status</small></div><div class="tile"><b>“Weather in Dublin”</b><small>Live weather</small></div><div class="tile"><b>“Who is Ada Lovelace?”</b><small>Wikipedia</small></div><div class="tile"><b>“Help”</b><small>Commands</small></div><div class="tile"><b>“Clear activity”</b><small>Clear log</small></div></div></article>
+<article class="card half"><div class="tag">06 · EVE CONNECT</div><h3>Network simulation</h3><div class="status"><span>Local network</span><b>Simulation only</b></div><div class="status"><span>Paired devices</span><b>0</b></div><div class="status"><span>Remote connection</span><b>Not implemented</b></div></article>
+<article class="card full"><div class="tag">07 · CONVERSATION</div><h3>Talk with EVE</h3><p class="desc">AI-powered replies when configured; otherwise uses free lookups (Wikipedia, weather) and scripted replies. AI conversation context lasts only for this browser session.</p><div id="chat" class="chatbox" aria-live="polite"><div class="bubble edith"><span class="who">EVE</span>Hello. I am ready. You can speak naturally or type here—try asking how I am, for a fact, a joke, or what I can do.</div></div><div class="commandrow"><input id="chatInput" type="text" placeholder="Say something to EVE…"><button class="btn primary" id="chatSend">Send</button></div><div class="btns"><button class="btn" id="chatClear">Clear conversation</button></div></article><article class="card full"><div class="tag">08 · COMMAND CONSOLE</div><h3>Activity log</h3><div class="commandrow"><input id="input" type="text" placeholder="Type a command, e.g. EVE status"><button class="btn primary" id="send">Run</button></div><div class="console" id="log">[EVE] Prototype 0.5 initialised.<br>[EVE] No external services connected.<br>[EVE] Voice controls ready.</div><div class="btns"><button class="btn" onclick="cmd('clear activity')">Clear log</button></div></article>
+<article class="card full"><div class="tag">09 · LIVE AI &amp; INTERNET</div><h3>Unlimited replies + web access</h3><p class="desc">Pick Google Gemini (online; requires an API key) or Ollama (the default local AI model; no API key, but speed depends on your hardware). Gemini sends your prompts to Google. Ollama can keep prompts on your computer. Your Gemini key is kept in page memory only and is not saved when you close or refresh this page. Do not share this HTML file with a key embedded in it. Without either AI provider, EVE still offers free lookups (Wikipedia and weather).</p><label for="provider">AI provider</label><select id="provider"><option value="gemini">Google Gemini (online, free key)</option><option value="ollama">Ollama (local model, no API key; hardware-limited)</option></select><div id="keyRow"><label for="apiKey">Gemini API key</label><input id="apiKey" type="password" autocomplete="off" placeholder="Paste your Gemini API key for this session" style="width:100%;background:#07121d;color:var(--text);border:1px solid #29465d;border-radius:9px;padding:10px;font:inherit"><p class="note">Security note: the key stays in this page session only. It is still visible to someone who can inspect this browser while the page is open. For a shared or public release, use a private backend instead.</p></div><div id="ollamaRow" style="display:none"><label for="ollamaUrl">Ollama address</label><input id="ollamaUrl" type="text" value="http://localhost:11434"></div><label for="modelName">Model</label><input id="modelName" type="text" value="gemini-3.1-flash-lite"><label class="switch"><input id="webSearch" type="checkbox" checked> Gemini only: use Google Search for time-sensitive questions (news, scores, prices, weather). Slower, so it is skipped for normal chat. Search results may need independent verification.</label><label class="switch"><input id="webLookup" type="checkbox" checked> Free lookups (Wikipedia &amp; weather) when no AI key</label><div class="btns"><button class="btn primary" id="saveAI">Save</button><button class="btn stop" id="forgetAI">Remove key</button></div><p class="note" id="aiStatus">AI: not configured.</p></article>
+</section><footer>EVE v1.2 · Offline voice build · Not an AR device, security system or emergency service.</footer></main>
+<script src="./node_modules/@lichess-org/vosk-browser/dist/vosk.js"></script>
+<script>
+const $=id=>document.getElementById(id);let voiceList=[],voiceReplies=true,recognizer=null,selectedVoice=null;
+
+function setOrbState(state){
+  const orb=$('edithOrb');if(!orb)return;
+  orb.classList.remove('listening','thinking','speaking');
+  if(state&&state!=='idle')orb.classList.add(state);
+}
+
+function writeLog(s){let d=document.createElement('div');d.textContent='['+new Date().toLocaleTimeString()+'] '+s;$('log').appendChild(d);$('log').scrollTop=$('log').scrollHeight}
+function loadVoices(){voiceList=speechSynthesis.getVoices();let sel=$('voices'),saved=localStorage.getItem('edithVoice');sel.innerHTML='';if(!voiceList.length){sel.innerHTML='<option>No voices available</option>';return}voiceList.forEach((v,i)=>{let o=document.createElement('option');o.value=i;o.textContent=v.name+' — '+v.lang+(v.default?' (default)':'');sel.appendChild(o)});let ix=saved?voiceList.findIndex(v=>v.name===saved):-1;
+if(ix<0)ix=voiceList.findIndex(v=>/hazel/i.test(v.name));
+if(ix<0)ix=Math.max(0,voiceList.findIndex(v=>v.lang.toLowerCase().startsWith('en')));sel.value=ix;selectedVoice=voiceList[ix]}
+function chooseVoice(){selectedVoice=voiceList[Number($('voices').value)]||null;if(selectedVoice)localStorage.setItem('edithVoice',selectedVoice.name)}
+function say(text){setOrbState('speaking');if(!voiceReplies||!window.speechSynthesis||!text){setOrbState('idle');return;}speechSynthesis.cancel();text=String(text).replace(/[*_#`>]/g,'');let parts=text.match(/[^.!?\n]+[.!?]*\s*/g)||[text],chunks=[],cur='';parts.forEach(p=>{if((cur+p).length>180&&cur){chunks.push(cur);cur=p}else cur+=p});if(cur)chunks.push(cur);chunks.forEach((c,i)=>{let u=new SpeechSynthesisUtterance(c.trim());if(selectedVoice)u.voice=selectedVoice;u.rate=Number($('rate').value);u.pitch=Number($('pitch').value);if(i===chunks.length-1)u.onend=()=>{setOrbState('idle');if(handsFree)startListening()};speechSynthesis.speak(u)})}
+function setPrivacy(on){$('privacy').checked=on;$('privacyState').textContent=on?'ON':'OFF';$('privacyState').style.color=on?'var(--green)':'var(--muted)';localStorage.setItem('edithPrivacy',on?'1':'0');writeLog('Privacy mode '+(on?'ON':'OFF')+' (simulation)');return 'Privacy mode is '+(on?'on':'off')+'.'}
+let chatTurns=0,lastTopic='';
+function chatBubble(who,text){let d=document.createElement('div');d.className='bubble '+(who==='YOU'?'user':'edith');let label=document.createElement('span');label.className='who';label.textContent=who;let body=document.createElement('span');body.textContent=text;d.append(label,body);$('chat').appendChild(d);$('chat').scrollTop=$('chat').scrollHeight}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function conversational(c){
+ const t=c.toLowerCase();
+ if(/\b(hello|hi|hey|good morning|good afternoon|good evening)\b/.test(t))return pick(['Hello. EVE interface ready. What can I help with?','Hello there. Systems are ready—what would you like to do?','Greetings. I am here and ready to assist.']);
+ if(/\bhow are you\b|\bhow you doing\b/.test(t))return pick(['Running smoothly. I do not experience moods, but I am ready to help. How are you doing?','All systems in this demo are operational. How has your day been?','I am functioning as expected. And how are things on your end?']);
+ if(/\b(thank you|thanks|cheers)\b/.test(t))return pick(['You are welcome.','Anytime—what else can I help with?','Glad I could help.']);
+ if(/\b(bored|nothing to do|im bored|i am bored)\b/.test(t))return pick(['We could explore an engineering idea, brainstorm a project, learn a strange science fact, or just chat. What sounds good?','A little boredom can be a good launchpad. Want a quick challenge, a science rabbit hole, or a creative idea?','I can suggest a mini-project, a puzzle, or something fascinating to learn.']);
+ if(/\b(joke|make me laugh|tell me something funny)\b/.test(t))return pick(['Why did the computer go to the doctor? It had a virus.','I asked an engineer to make a joke about gravity. It was a down-to-earth request.','Why did the robot cross the road? It was programmed to follow the pedestrian pathway.']);
+ if(/\b(fact|interesting|something interesting|surprise me)\b/.test(t))return pick(['A day on Venus is longer than its year: Venus rotates very slowly compared with how quickly it orbits the Sun.','Some species of bamboo can grow remarkably quickly—under ideal conditions, certain kinds can grow close to a metre in a day.','The International Space Station travels around Earth roughly every 90 minutes, so its crew sees many sunrises and sunsets each day.','Octopuses have three hearts, and two pump blood through the gills while one pumps it to the rest of the body.']);
+ if(/\b(what can you do|capabilities|your abilities|help me)\b/.test(t))return 'I can respond to casual conversation, tell a few facts and jokes, give a system-status overview, simulate privacy controls, and show the security/network demo. I am not connected to real devices or a live AI service yet.';
+ if(/\b(who are you|what are you|your name)\b/.test(t))return 'I am EVE, a local interface prototype for a spatial-assistant concept. This version uses programmed replies, not a live AI model.';
+ if(/\b(are you real|are you alive|do you have feelings|feel)\b/.test(t))return 'I am software running in your browser. I can use a conversational style, but I am not conscious and do not have feelings or experiences.';
+ if(/\b(bye|goodbye|see you|good night)\b/.test(t))return pick(['Until next time. Interface standing by.','Goodbye. You can return whenever you want to continue.','Good night. Ending conversation mode.']);
+ if(/\b(what time|time is it)\b/.test(t))return 'Your device time is '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'.';
+ if(/\b(what date|date today|today's date)\b/.test(t))return 'Today is '+new Date().toLocaleDateString([], {weekday:'long',year:'numeric',month:'long',day:'numeric'})+'.';
+ if(/\b(status|system check)\b/.test(t))return 'EVE prototype online. Voice interface ready. Privacy mode '+($('privacy').checked?'on':'off')+'. No external devices are connected.';
+ if(/\b(privacy)\b/.test(t)&&/\b(off|disable)\b/.test(t))return setPrivacy(false);
+ if(/\b(privacy)\b/.test(t)&&/\b(on|enable)\b/.test(t))return setPrivacy(true);
+ if(/\b(security|secure|scan)\b/.test(t))return 'Security centre is a visual demo only. There is no real scan, monitoring, or security service connected.';
+ if(/\b(connect|network|devices)\b/.test(t))return 'EVE Connect is simulated in this prototype. No devices are paired and no network service is running.';
+ if(/\b(help|commands)\b/.test(t))return 'You can chat casually, ask for a joke or fact, ask how I am, ask the date or time, say “status”, “privacy on/off”, “security”, “connections”, or “clear activity”.';
+ if(/\b(yes|yeah|yep|sure|okay|ok)\b/.test(t)&&lastTopic==='offer')return 'All right. Tell me what you would like to explore, and I will do my best within this prototype.';
+ if(/\b(no|nope|not really)\b/.test(t))return pick(['Understood. We can change direction. What is on your mind?','No problem. What would you rather talk about?','All right. I will not push that idea.']);
+ if(/\b(what do you think|your opinion|opinion)\b/.test(t))return 'I can offer a reasoned perspective, but remember this prototype is using preset response logic rather than genuinely analysing a topic with a live AI model. If you tell me the subject, I can respond with a programmed conversational prompt.';
+ lastTopic='';return pick(['I may not have a preset response for that yet. Could you phrase it another way or ask me about a fact, joke, status, privacy, or security?','That is outside my current response library. I am still a prototype—try another angle?','I do not have a programmed answer to that yet. I can still handle casual greetings, facts, jokes, status, and a few controls.']);
+}
+let handsFree=false,history=[];
+const WX={0:'clear sky',1:'mostly clear',2:'partly cloudy',3:'overcast',45:'foggy',48:'foggy',51:'light drizzle',53:'drizzle',55:'heavy drizzle',61:'light rain',63:'rain',65:'heavy rain',71:'light snow',73:'snow',75:'heavy snow',80:'rain showers',81:'rain showers',82:'violent showers',95:'thunderstorms'};
+function controlReply(t){
+ if(/\b(privacy)\b/.test(t)&&/\b(off|disable)\b/.test(t))return setPrivacy(false);
+ if(/\b(privacy)\b/.test(t)&&/\b(on|enable)\b/.test(t))return setPrivacy(true);
+ if(/^\s*(edith[, ]*)?(status|system check)\s*$/.test(t))return 'EVE online. Voice ready. Privacy mode '+($('privacy').checked?'on':'off')+'. Live AI: '+(aiOn()?'connected':'not configured')+'. Internet lookups: '+($('webLookup').checked?'enabled':'disabled')+'.';
+ if(/\b(what time|time is it)\b/.test(t)&&!/\bin\b/.test(t))return 'Your device time is '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'.';
+ if(/\b(what date|date today|today's date)\b/.test(t))return 'Today is '+new Date().toLocaleDateString([], {weekday:'long',year:'numeric',month:'long',day:'numeric'})+'.';
+ return null}
+function aiOn(){return ($('provider')&&$('provider').value==='ollama')||!!apiKey()}
+function apiKey(){return ($('apiKey').value||'').trim()}
+const NEEDS_WEB=/\b(news|latest|today|tonight|tomorrow|yesterday|current|currently|right now|this (week|month|year)|price|stock|score|scores|result|results|won|winner|release|released|update|weather|forecast|trending|open now|search|look up|google|202\d)\b/i;
+async function askOllama(text){
+ history.push({role:'user',content:text});history=history.slice(-20);
+ const base=($('ollamaUrl').value||'http://localhost:11434').trim().replace(/\/+$/,''),model=($('modelName').value||'llama3.1:8b').trim();
+ const sys='You are EVE, a spoken voice assistant inside a browser interface. Reply in plain conversational sentences with no markdown, lists or emoji. Keep answers short, usually 1-3 sentences, unless asked for more. Today is '+new Date().toDateString()+'.';
+ let to;const timeout=new Promise((_,rej)=>{to=setTimeout(()=>rej(new Error('Ollama took longer than 90 seconds. The first reply loads the model and can be slow; try again, or use a smaller model such as a smaller model if your computer struggles.')),90000)});
+ try{
+  const t0=performance.now();
+  const work=(async()=>{let res;try{res=await fetch(base+'/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({model,stream:false,messages:[{role:'system',content:sys}].concat(history)})})}catch(e){throw new Error('Could not reach Ollama at '+base+'. Check that Ollama is running and that its browser-access settings allow this page. Avoid exposing Ollama broadly to your network.')}
+   const data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.error||('Ollama HTTP '+res.status)+(res.status===404?' (model not found: run ollama pull '+model+')':''));return data})();
+  const data=await Promise.race([work,timeout]);
+  const out=((data.message&&data.message.content)||'').replace(/<think>[\s\S]*?<\/think>/g,'').trim()||'I could not form a reply.';
+  writeLog('Ollama replied in '+((performance.now()-t0)/1000).toFixed(1)+'s');
+  history.push({role:'assistant',content:out});return out
+ }catch(e){history.pop();throw e}finally{clearTimeout(to)}}
+async function askAI(text){
+ if($('provider').value==='ollama')return askOllama(text);
+ history.push({role:'user',content:text});history=history.slice(-20);
+ const model=($('modelName').value||'gemini-3.1-flash-lite').trim();
+ const url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent';
+ const sys='You are EVE, a spoken voice assistant inside a browser interface. Reply in plain conversational sentences with no markdown, lists or emoji. Keep answers short, usually 1-3 sentences, unless asked for more. Today is '+new Date().toDateString()+'.';
+ const mk=(s,t)=>{const g={maxOutputTokens:1024};if(t)g.thinkingConfig=/gemini-3/.test(model)?{thinkingLevel:'low'}:{thinkingBudget:0};const b={systemInstruction:{parts:[{text:sys}]},contents:history.map(m=>({role:m.role==='assistant'?'model':'user',parts:[{text:m.content}]})),generationConfig:g};if(s)b.tools=[{google_search:{}}];return b};
+ const call=async(s,t)=>{let to;const timeout=new Promise((_,rej)=>{to=setTimeout(()=>rej(new Error('Gemini took longer than 25 seconds. Try a lighter model such as gemini-3.1-flash-lite, or turn Google Search off.')),25000)});try{const work=(async()=>{const res=await fetch(url,{method:'POST',headers:{'content-type':'application/json','x-goog-api-key':apiKey()},body:JSON.stringify(mk(s,t))});const data=await res.json().catch(()=>({}));return {res,data}})();return await Promise.race([work,timeout])}finally{clearTimeout(to)}};
+ try{
+  const t0=performance.now();
+  const wantSearch=$('webSearch').checked&&NEEDS_WEB.test(text);
+  const attempts=[[wantSearch,true],[false,true],[false,false]].filter((x,i,arr)=>arr.findIndex(y=>y[0]===x[0]&&y[1]===x[1])===i);
+  let res,data;
+  for(const [s,t] of attempts){
+   ({res,data}=await call(s,t));
+   if(res.ok)break;
+   writeLog('Gemini '+res.status+(s?' (search on)':'')+(t?' (thinking cap on)':'')+': '+((data.error&&data.error.message)||'error'));
+   if(res.status===429||res.status===401||(res.status===400&&/api key/i.test((data.error&&data.error.message)||'')))break;
+  }
+  if(!res.ok){const msg=(data.error&&data.error.message)||('HTTP '+res.status);throw new Error(res.status===429?'Rate limit reached on the free tier. Wait a minute and try again. ('+msg+')':msg)}
+  const parts=(data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts)||[];
+  const out=parts.filter(p=>p.text&&!p.thought).map(p=>p.text).join('').trim()||'I could not form a reply.';
+  writeLog('Gemini replied in '+((performance.now()-t0)/1000).toFixed(1)+'s'+(wantSearch?' (with Google Search)':''));
+  history.push({role:'assistant',content:out});return out
+ }catch(e){history.pop();throw e}}
+async function weatherLookup(place){
+ const g=await (await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name='+encodeURIComponent(place))).json();
+ if(!g.results||!g.results.length)return 'I could not find a place called '+place+'.';
+ const p=g.results[0];const w=await (await fetch('https://api.open-meteo.com/v1/forecast?latitude='+p.latitude+'&longitude='+p.longitude+'&current=temperature_2m,wind_speed_10m,weather_code')).json();const c=w.current;
+ return 'In '+p.name+(p.country?', '+p.country:'')+' it is '+Math.round(c.temperature_2m)+' degrees Celsius with '+(WX[c.weather_code]||'mixed conditions')+' and wind at '+Math.round(c.wind_speed_10m)+' kilometres per hour.'}
+async function wikiLookup(q){
+ const s=await (await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&origin=*&srlimit=1&srsearch='+encodeURIComponent(q))).json();
+ const hit=s.query&&s.query.search&&s.query.search[0];if(!hit)return null;
+ const r=await (await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(hit.title.replace(/ /g,'_')))).json();
+ if(!r.extract)return null;return r.title+': '+r.extract.split(/(?<=[.!?])\s+/).slice(0,2).join(' ')+' (Source: Wikipedia)'}
+async function webReply(raw,t){
+ let m=t.match(/weather(?:\s+\w+){0,2}?\s+(?:in|for|at)\s+([a-z .'-]+?)\s*[?.!]*$/);if(m)return weatherLookup(m[1]);
+ m=t.match(/^(?:edith[, ]*)?(?:who (?:is|was|are)|what (?:is|are|was)|tell me about|look up|search(?: for)?|explain)\s+(?:an?\s+|the\s+)?(.{2,80}?)\s*[?.!]*$/);
+ if(m&&!/\b(you|your|time|date|joke|fact)\b/.test(m[1]))return wikiLookup(m[1]);
+ return null}
+async function cmd(raw){let c=raw.trim().toLowerCase();if(!c)return;writeLog('Input: '+raw);$('core').textContent='Processing…';setOrbState('thinking');let r='';
+ if(/\b(clear activity|clear log|clear history)\b/.test(c)){$('log').innerHTML='[EVE] Activity display cleared.';r='Activity display cleared.';}
+ else{
+  r=controlReply(c);
+  if(!r&&$('webLookup').checked&&$('provider').value==='ollama'){try{r=await webReply(raw,c)}catch(e){writeLog('Web error: '+e.message);r=null}}
+  if(!r&&aiOn()){try{r=await askAI(raw)}catch(e){writeLog('AI error: '+e.message);r='I could not get an AI reply: '+e.message}}
+  else if(!r&&$('webLookup').checked){try{r=await webReply(raw,c)}catch(e){writeLog('Web error: '+e.message);r=null}}
+  if(!r)r=conversational(c)||pick(['I do not have an answer for that offline. Choose an AI in section nine for open-ended conversation, or ask me for the weather in a city or who someone is.','That is outside my built-in replies. With an AI connected I can answer much more.']);
+ }
+ $('core').textContent='Ready · response generated';writeLog('EVE: '+r);say(r);if(!voiceReplies)setOrbState('idle');return r}
+async function sendChat(raw){let msg=raw.trim();if(!msg)return;chatBubble('YOU',msg);chatBubble('EVE','…');let pending=$('chat').lastChild;let response=await cmd(msg);pending.lastChild.textContent=response;$('chat').scrollTop=$('chat').scrollHeight;chatTurns++;}
+function startListening(){if(recognizer)try{recognizer.start()}catch(e){}}
+$('chatSend').onclick=()=>{sendChat($('chatInput').value);$('chatInput').value='';$('chatInput').focus()};$('chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('chatSend').click()});$('chatClear').onclick=()=>{$('chat').innerHTML='';chatBubble('EVE','Conversation cleared. Ready when you are.');speechSynthesis?.cancel()};
+$('privacy').addEventListener('change',e=>say(setPrivacy(e.target.checked)));$('send').onclick=()=>{cmd($('input').value);$('input').value=''};$('input').addEventListener('keydown',e=>{if(e.key==='Enter')$('send').click()});$('voices').addEventListener('change',chooseVoice);$('preview').onclick=()=>say('Hello. I am EVE. Interface ready.');$('voiceToggle').onclick=()=>{voiceReplies=!voiceReplies;$('voiceToggle').textContent='Voice replies: '+(voiceReplies?'ON':'OFF');localStorage.setItem('edithReplies',voiceReplies?'1':'0');if(!voiceReplies&&speechSynthesis)speechSynthesis.cancel()};
+$('rate').oninput=()=>{$('rateTxt').textContent=Number($('rate').value).toFixed(2)+'×';localStorage.setItem('edithRate',$('rate').value)};$('pitch').oninput=()=>{$('pitchTxt').textContent=Number($('pitch').value).toFixed(2);localStorage.setItem('edithPitch',$('pitch').value)};let r=localStorage.getItem('edithRate'),p=localStorage.getItem('edithPitch');if(r)$('rate').value=r;if(p)$('pitch').value=p;$('rateTxt').textContent=Number($('rate').value).toFixed(2)+'×';$('pitchTxt').textContent=Number($('pitch').value).toFixed(2);let pv=localStorage.getItem('edithPrivacy');if(pv!==null){$('privacy').checked=pv==='1';$('privacyState').textContent=pv==='1'?'ON':'OFF';$('privacyState').style.color=pv==='1'?'var(--green)':'var(--muted)'}let vr=localStorage.getItem('edithReplies');if(vr!==null)voiceReplies=vr==='1';$('voiceToggle').textContent='Voice replies: '+(voiceReplies?'ON':'OFF');if(window.speechSynthesis){loadVoices();speechSynthesis.onvoiceschanged=loadVoices}else $('voiceNote').textContent='Speech synthesis unavailable in this browser.';
+// Offline speech recognition (Vosk). Audio is processed on this computer;
+// it does not use the browser's online SpeechRecognition service.
+let offlineModel=null,offlineRecognizer=null,offlineStream=null,offlineAudioContext=null,offlineSource=null,offlineProcessor=null,offlineActive=false,offlineLoading=null;
+const OFFLINE_MODEL_URL='/models/vosk-model-small-en-us-0.15.tar.gz';
+async function loadOfflineVoice(){
+ if(offlineRecognizer)return true;
+ if(offlineLoading)return offlineLoading;
+ offlineLoading=(async()=>{
+  if(!window.Vosk||typeof window.Vosk.createModel!=='function')throw new Error('The local Vosk speech engine is missing. Re-run npm install in the project folder.');
+  const check=await fetch(OFFLINE_MODEL_URL,{method:'HEAD'});
+  if(!check.ok)throw new Error('The offline English speech model is missing. Run GET_VOSK_MODEL.bat in the EVE project folder, then rebuild the installer.');
+  $('voiceStatus').textContent='Loading offline speech model… (first load can take a little while)';
+  offlineModel=await window.Vosk.createModel(OFFLINE_MODEL_URL);
+  offlineRecognizer=new offlineModel.KaldiRecognizer();
+  offlineRecognizer.on('result',message=>{
+   const heard=(message&&message.result&&message.result.text||'').trim();
+   if(heard&&offlineActive){stopOfflineCapture(false);$('voiceStatus').textContent='Heard: '+heard;sendChat(heard);}
+  });
+  offlineRecognizer.on('error',message=>{$('voiceStatus').textContent='Offline recognition error: '+(message.error||'unknown error');});
+  $('voiceStatus').textContent='Offline voice ready. Your speech is processed on this PC.';
+  return true;
+ })().catch(err=>{offlineLoading=null;throw err;});
+ return offlineLoading;
+}
+async function startOfflineListening(){
+ try{
+  await loadOfflineVoice();
+  if(offlineActive)return;
+  offlineStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,channelCount:1},video:false});
+  offlineAudioContext=new (window.AudioContext||window.webkitAudioContext)({sampleRate:16000});
+  await offlineAudioContext.resume();
+  offlineSource=offlineAudioContext.createMediaStreamSource(offlineStream);
+  offlineProcessor=offlineAudioContext.createScriptProcessor(4096,1,1);
+  offlineProcessor.onaudioprocess=event=>{
+   if(!offlineActive||!offlineRecognizer)return;
+   try{offlineRecognizer.acceptWaveform(event.inputBuffer);}catch(error){$('voiceStatus').textContent='Audio processing error: '+error.message;}
+   const out=event.outputBuffer.getChannelData(0);out.fill(0);
+  };
+  offlineSource.connect(offlineProcessor);offlineProcessor.connect(offlineAudioContext.destination);
+  offlineActive=true;$('voiceStatus').textContent='Listening offline… Speak naturally.';$('listen').textContent='🎙 Listening…';setOrbState('listening');
+ }catch(error){$('voiceStatus').textContent=error.message||'Could not start offline listening.';writeLog('Voice error: '+($('voiceStatus').textContent));}
+}
+function stopOfflineCapture(updateStatus=true){
+ offlineActive=false;
+ try{if(offlineProcessor){offlineProcessor.disconnect();offlineProcessor.onaudioprocess=null;}}catch(e){}
+ try{if(offlineSource)offlineSource.disconnect();}catch(e){}
+ try{if(offlineStream)offlineStream.getTracks().forEach(t=>t.stop());}catch(e){}
+ try{if(offlineAudioContext)offlineAudioContext.close();}catch(e){}
+ offlineProcessor=null;offlineSource=null;offlineStream=null;offlineAudioContext=null;
+ $('listen').textContent='🎙 Start listening';
+ if(updateStatus){$('voiceStatus').textContent='Voice stopped.';setOrbState('idle');}
+}
+function startListening(){startOfflineListening();}
+$('listen').onclick=()=>startOfflineListening();
+$('stop').onclick=()=>{handsFree=false;$('handsFree').textContent='Conversation mode: OFF';stopOfflineCapture();if(speechSynthesis)speechSynthesis.cancel();};
+
+(function(){localStorage.removeItem('edithGeminiKey');let m=localStorage.getItem('edithModel'),ws=localStorage.getItem('edithWS'),wl=localStorage.getItem('edithWL');if(m&&!/^claude/.test(m)&&m!=='gemini-3.5-flash')$('modelName').value=m;if(ws!==null)$('webSearch').checked=ws==='1';if(wl!==null)$('webLookup').checked=wl==='1';else $('webLookup').checked=true;
+function st(){$('aiStatus').textContent=apiKey()?'AI: Gemini connected · model '+$('modelName').value+(($('webSearch').checked)?' · web search on':' · web search off'):'AI: not configured. Using free lookups and scripted replies.'}
+$('saveAI').onclick=()=>{localStorage.setItem('edithModel',$('modelName').value.trim());localStorage.setItem('edithWS',$('webSearch').checked?'1':'0');localStorage.setItem('edithWL',$('webLookup').checked?'1':'0');history=[];st();writeLog('AI settings saved; Gemini key remains in page memory only')};
+$('forgetAI').onclick=()=>{$('apiKey').value='';history=[];localStorage.removeItem('edithGeminiKey');st();writeLog('Gemini key cleared from this page session')};st();
+$('handsFree').onclick=()=>{handsFree=!handsFree;$('handsFree').textContent='Conversation mode: '+(handsFree?'ON':'OFF');if(handsFree)startListening();else stopOfflineCapture()};
+
+$('stop').addEventListener('click',()=>{handsFree=false;$('handsFree').textContent='Conversation mode: OFF';stopOfflineCapture()})})();
+
+(function(){
+ const DEF={gemini:'gemini-3.1-flash-lite',ollama:'llama3.1:8b'};
+ const models=()=>{try{return JSON.parse(localStorage.getItem('edithModels')||'{}')}catch(e){return {}}};
+ function status(){const p=$('provider').value;$('aiStatus').textContent=p==='ollama'?'AI: Ollama (local) · model '+$('modelName').value+' · '+$('ollamaUrl').value:(apiKey()?'AI: Gemini connected for this session · model '+$('modelName').value:'AI: not configured. Using free lookups and scripted replies.')}
+ function applyProvider(){const p=$('provider').value;$('keyRow').style.display=p==='gemini'?'':'none';$('ollamaRow').style.display=p==='ollama'?'':'none';$('modelName').value=models()[p]||DEF[p];if(p==='ollama'&&$('modelName').value==='llama3.2')$('modelName').value=DEF.ollama;status()}
+ let sp=localStorage.getItem('edithProvider'),ou=localStorage.getItem('edithOllamaUrl');if(ou)$('ollamaUrl').value=ou;$('provider').value=(sp==='ollama'||sp==='gemini')?sp:'ollama';
+ $('provider').onchange=()=>{history=[];applyProvider()};
+ $('saveAI').onclick=()=>{const p=$('provider').value,m=models();m[p]=$('modelName').value.trim();localStorage.setItem('edithModels',JSON.stringify(m));localStorage.setItem('edithProvider',p);localStorage.setItem('edithOllamaUrl',$('ollamaUrl').value.trim());localStorage.removeItem('edithGeminiKey');localStorage.setItem('edithWS',$('webSearch').checked?'1':'0');localStorage.setItem('edithWL',$('webLookup').checked?'1':'0');history=[];status();writeLog('AI settings saved ('+p+')')};
+ applyProvider();
+})();
+
+
+// EVE welcome menu, startup animation, settings navigation, and PIN-gated developer panel.
+(function eveShell(){
+ const el=id=>document.getElementById(id);
+ const screens=['welcomeScreen','settingsScreen','devScreen'];
+ function showScreen(id){screens.forEach(x=>el(x).style.display=x===id?'flex':'none');el('assistantApp').classList.add('assistant-hidden');}
+ function openAssistant(target){screens.forEach(x=>el(x).style.display='none');el('assistantApp').classList.remove('assistant-hidden');if(target){setTimeout(()=>{const node=el(target);if(node)node.scrollIntoView({behavior:'smooth',block:'center'});},120);}}
+ setTimeout(()=>{el('bootSplash').style.display='none';showScreen('welcomeScreen');},2400);
+ el('startEve').onclick=()=>openAssistant();
+ el('openSettings').onclick=()=>showScreen('settingsScreen');
+ el('settingsBack').onclick=()=>showScreen('welcomeScreen');
+ el('backToMenu').onclick=()=>showScreen('welcomeScreen');
+ el('openSettingsFromApp').onclick=()=>showScreen('settingsScreen');
+ el('voiceSettings').onclick=()=>openAssistant('voices');
+ el('aiSettings').onclick=()=>openAssistant('provider');
+ el('developerAccess').onclick=()=>{showScreen('devScreen');refreshDevScreen();};
+ el('devBack').onclick=()=>showScreen('settingsScreen');
+ let devUnlocked=false, changingPin=false;
+ const hasPin=()=>!!(localStorage.getItem('eveDevSalt')&&localStorage.getItem('eveDevHash'));
+ function bytesToHex(bytes){return Array.from(bytes).map(b=>b.toString(16).padStart(2,'0')).join('');}
+ async function digestPin(pin,saltHex){
+   if(!window.crypto||!crypto.subtle)throw new Error('Secure PIN storage is unavailable in this app session.');
+   const salt=new Uint8Array(saltHex.match(/.{2}/g).map(x=>parseInt(x,16)));
+   const pinBytes=new TextEncoder().encode(pin),all=new Uint8Array(salt.length+pinBytes.length);all.set(salt);all.set(pinBytes,salt.length);
+   const hash=await crypto.subtle.digest('SHA-256',all);return bytesToHex(new Uint8Array(hash));
+ }
+ function refreshDevScreen(){
+   el('pinMessage').textContent='';el('devPanel').style.display=devUnlocked?'block':'none';
+   el('pinSetup').style.display=(!hasPin()||changingPin)&&!devUnlocked?'block':'none';
+   el('pinUnlock').style.display=hasPin()&&!devUnlocked&&!changingPin?'block':'none';
+   el('devIntro').textContent=hasPin()?'Enter your PIN to unlock developer access.':'Create a PIN for the developer panel.';
+ }
+ el('savePin').onclick=async()=>{
+   const a=el('newPin').value,b=el('confirmPin').value;
+   if(!/^\d{6,12}$/.test(a)){el('pinMessage').textContent='Choose a PIN containing 6–12 digits.';return;}
+   if(a!==b){el('pinMessage').textContent='The PINs do not match.';return;}
+   try{const salt=bytesToHex(crypto.getRandomValues(new Uint8Array(16)));const hash=await digestPin(a,salt);localStorage.setItem('eveDevSalt',salt);localStorage.setItem('eveDevHash',hash);el('newPin').value='';el('confirmPin').value='';changingPin=false;devUnlocked=true;refreshDevScreen();el('pinMessage').textContent='PIN saved. Developer access is unlocked for this session.';}
+   catch(err){el('pinMessage').textContent=err.message||'Could not save PIN.';}
+ };
+ el('unlockDev').onclick=async()=>{
+   const pin=el('unlockPin').value;
+   if(!/^\d{6,12}$/.test(pin)){el('pinMessage').textContent='Enter your 6–12 digit PIN.';return;}
+   try{const hash=await digestPin(pin,localStorage.getItem('eveDevSalt'));if(hash===localStorage.getItem('eveDevHash')){devUnlocked=true;el('unlockPin').value='';refreshDevScreen();}else el('pinMessage').textContent='That PIN did not match.';}
+   catch(err){el('pinMessage').textContent=err.message||'Could not verify PIN.';}
+ };
+ el('changePin').onclick=()=>{changingPin=true;devUnlocked=false;refreshDevScreen();};
+ el('lockDev').onclick=()=>{devUnlocked=false;changingPin=false;refreshDevScreen();};
+ el('openFullConsole').onclick=()=>openAssistant('provider');
+ refreshDevScreen();
+})();
+
+</script></body></html>
